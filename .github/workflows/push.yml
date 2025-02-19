@@ -1,0 +1,16 @@
+# -------------------------------------------- #
+# Note: this file originates in template-shell #
+# -------------------------------------------- #
+
+name: push
+
+on:
+  - push
+  - workflow_dispatch
+
+permissions: read-all
+
+jobs:
+  main:
+    uses: ahmadnassri/actions/.github/workflows/push-shell.yml@master
+    secrets: inherit

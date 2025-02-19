@@ -1,0 +1,8 @@
+version: 2.0
+
+id: gh-prx
+
+about:
+  title: gh-prx
+  description: opinionated branch-pr-push workflow
+  repository: ahmadnassri/gh-prx

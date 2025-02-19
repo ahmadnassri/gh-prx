@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# set -e
+
+# check if gh cli is installed
+hash gh 2> /dev/null || { echo >&2 "gh cli not found. https://cli.github.com" && exit 1; }
+
+function usage () {
+  if [ -n "$1" ]; then
+    echo "❌ $1"
+    echo ""
+  fi
+
+  cat << EOF
+Usage: gh prx [branch]
+create a branch, commit changes, push, make a pr
+EOF
+}
+
+if [ -z "$1" ]; then
+  usage "must provide a branch name"
+  exit 1
+fi
+
+# check for staged files
+git diff --cached --quiet
+staged=$?
+
+if [ "$staged" != "1" ]; then
+  usage "no staged files"
+  exit 1
+fi
+
+if [ -n "$2" ]; then
+  message="-m $2"
+  exit 1
+fi
+
+
+# stash any current changes
+git stash push -m "gh-prx-stash-$1"
+# create new branch
+git stash branch $1 $(git stash list | grep "gh-prx-stash$1" | cut -d: -f1)
+# commit the changes
+git commit $message
+# make pull request
+gh pr create --fill
+# # open pull request in the browser
+gh pr view -w
